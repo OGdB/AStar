@@ -91,6 +91,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void GenerateNewMap()
+    {
+        ResetVisualization();
+        ResetValues();
+
+        Destroy(GameObject.Find("Map"));
+
+        GenerateMap();
+    }
+
     private void HandleTileClick(Tile clickedTile)
     {
         if (clickedTile.TileData.TerrainType == TerrainType.Water)
@@ -138,9 +148,7 @@ public class GameManager : MonoBehaviour
     {
         ResetVisualization();
 
-        _startNode = null;
-        _endNode = null;
-        _shortestPath?.Clear();
+        ResetValues();
     }
 
     /// <summary>
@@ -191,6 +199,13 @@ public class GameManager : MonoBehaviour
 
         // Return null if out of bounds.
         return null;
+    }
+
+    private void ResetValues()
+    {
+        _startNode = null;
+        _endNode = null;
+        _shortestPath?.Clear();
     }
 
 }
