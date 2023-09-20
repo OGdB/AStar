@@ -43,8 +43,17 @@ public class GameManager : MonoBehaviour
 
     private void Start() => GenerateMap();
 
-    private void OnEnable() => TileInteraction.OnTileClicked += HandleTileClick;
-    private void OnDisable() => TileInteraction.OnTileClicked -= HandleTileClick;
+    private void OnEnable()
+    {
+        TileInteraction.OnTileClicked += HandleTileClick;
+        TileInteraction.OnRightClickEvent += OnRightClick;
+    }
+
+    private void OnDisable()
+    {
+        TileInteraction.OnTileClicked -= HandleTileClick;
+        TileInteraction.OnRightClickEvent -= OnRightClick;
+    }
 
     /// <summary>
     /// Generates a map of IAStarNodes, visualized by gameobjects.
@@ -94,7 +103,7 @@ public class GameManager : MonoBehaviour
 
         if (_startNode == null)
         {
-            Debug.Log($"Clicked {clickedTile.tileData.TileMaterial} tile.");
+            Debug.Log($"Clicked {clickedTile.TileData.TileMaterial} tile.");
             _startNode = clickedTile;
             _startNode.Elevate();
 
@@ -122,11 +131,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Invoked when right click is pressed ~ will reset any selection.
+    /// </summary>
+    private void OnRightClick(object sender, System.EventArgs e)
+    {
+        ResetVisualization();
+
+        _startNode = null;
+        _endNode = null;
+        _shortestPath?.Clear();
+    }
+
+    /// <summary>
+    /// Reset any path- or selection visualization.
+    /// </summary>
     private void ResetVisualization()
     {
+        if (_startNode) ResetTileVisualization(_startNode);
+        if (_endNode) ResetTileVisualization(_endNode);
+
         if (_shortestPath == null) return;
 
         foreach (Tile tile in _shortestPath.Cast<Tile>())
+        {
+            ResetTileVisualization(tile);
+        }
+
+        static void ResetTileVisualization(Tile tile)
         {
             tile.LockedOutline = false;
             tile.SetOutlineColor(tile.DefaultOutlineColor, false);

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -5,6 +6,8 @@ public class TileInteraction : MonoBehaviour
 {
     public delegate void TileClickEventHandler(Tile clickedTile);
     public static event TileClickEventHandler OnTileClicked;
+
+    public static EventHandler OnRightClickEvent;
 
     private void Update()
     {
@@ -19,6 +22,10 @@ public class TileInteraction : MonoBehaviour
                     OnTileClicked?.Invoke(clickedTile);
                 }
             }
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            OnRightClickEvent.Invoke(this, EventArgs.Empty);
         }
     }
 }
