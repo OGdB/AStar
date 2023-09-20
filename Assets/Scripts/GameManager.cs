@@ -129,7 +129,9 @@ public class GameManager : MonoBehaviour
 
             if (_shortestPath == null)
             {
-                print("Path unreachable or invalid");
+                Debug.LogWarning("Path unreachable or invalid");
+                ResetVisualization();
+                ResetValues();
                 return;
             }
 
